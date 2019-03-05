@@ -4,21 +4,24 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    const float GRAVITY = 9.8f;
+    const float GRAVITY = 9.81f;
     [SerializeField] private Camera playerCam;
 
     [Space(10)]
 
+    [Header("Look Settings")]
     [SerializeField] private bool invertMouse = false;
     [SerializeField] private float sensitivity = 1f;
 
     [Space(10)]
 
+    [Header("Movement Settings")]
     [SerializeField] private float speed = 5f;
     [SerializeField] private float sprintMultiplier = 2f;
     [SerializeField] private float jumpForce = 10f;
     [SerializeField] private float gravityScale = 0.0625f;
 
+    // [Header("Weapon Settings")]
 
     private CharacterController controller;
     private Vector3 movement = Vector3.zero;
@@ -27,6 +30,13 @@ public class PlayerController : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
+        if(playerCam == null)
+        {
+            Debug.Log("Player Camera not set: Finding Main Camera...");
+            GameObject obj = GameObject.Find("Main Camera");
+            obj.transform.parent = this.transform;
+            playerCam = obj.GetComponent<Camera>();
+        }
     }
 
     void Update()
@@ -66,7 +76,7 @@ public class PlayerController : MonoBehaviour
 
             movement = transform.rotation * movement; // Rotate movement vector to account for player direction
 
-            if (Input.GetButton("Sprint"))
+            if (Input.GetButton("Sprint") && Input.GetAxis("Vertical") > 0)
             {
                 print("SPRINTING");
                 movement.x *= sprintMultiplier;
@@ -84,6 +94,13 @@ public class PlayerController : MonoBehaviour
             print("inAir");
             movement.y = movement.y - (GRAVITY * Time.deltaTime * gravityScale);
         }
+
+        // Move Player
         controller.Move(movement);
+    }
+
+    public Camera GetPlayerCamera()
+    {
+        return playerCam;
     }
 }

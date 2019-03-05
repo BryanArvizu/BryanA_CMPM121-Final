@@ -9,21 +9,33 @@ public class AmmoInventory : MonoBehaviour
     private int ammo = 128;
     private int maxAmmo = 256;
 
+    private void Start()
+    {
+        if (gameObject.tag == "Player")
+            EventManager.TriggerEvent("AmmoMax", ammo);
+    }
+
     public int requestAmmo(int request)
     {
-        if (ammo > request || infiniteAmmo)
-        {
-            ammo -= request;
+        int x = 0; // Value to be returned
+
+        if (infiniteAmmo)
             return request;
-        }
-        else if (request > ammo)
+
+        if (ammo > request) // If more ammo than requested, return full amount
         {
-            int x = ammo;
-            ammo = 0;
-            return x;
+            x = request;
+            ammo -= request;
         }
-        else
-            return 0;
+        else // If less ammo than requested, return whatever is left
+        {
+            x = ammo;
+            ammo = 0;
+        }
+
+        if (gameObject.tag == "Player")
+            EventManager.TriggerEvent("AmmoMax", ammo);
+        return x;
     }
 
     public int getAmmo()

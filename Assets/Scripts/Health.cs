@@ -8,11 +8,20 @@ public class Health : MonoBehaviour
     [SerializeField] private float maxHealth = 100;
     [SerializeField] private bool destroyOnDeath = true;
 
+    private void Start()
+    {
+        if(gameObject.tag == "Player")
+            EventManager.TriggerEvent("Health", currentHealth);
+    }
+
     public void InflictDamage(float dmg)
     {
         currentHealth -= dmg;
         if (currentHealth < 0)
             currentHealth = 0;
+
+        if (gameObject.tag == "Player")
+            EventManager.TriggerEvent("Health", currentHealth);
 
         if (currentHealth == 0 && destroyOnDeath)
         {
@@ -25,5 +34,7 @@ public class Health : MonoBehaviour
         currentHealth += heal;
         if (currentHealth > maxHealth)
             currentHealth = maxHealth;
+        if (gameObject.tag == "Player")
+            EventManager.TriggerEvent("Health", currentHealth);
     }
 }

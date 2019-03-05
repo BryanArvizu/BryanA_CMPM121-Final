@@ -1,0 +1,15 @@
+ASSET SOURCES:
+
+3D Models:
+	Low Poly Gun Assets by HANUSIAK at:
+	https://assetstore.unity.com/packages/3d/props/guns/low-poly-guns-asset-105979
+
+SOUND:
+	Gunshot by ShawnyBoy at:
+	https://freesound.org/people/ShawnyBoy/sounds/166191/
+	
+	EmptyClip by Nanashi at:
+	https://freesound.org/people/Nanashi/sounds/104412/
+	
+	Reload by nioczkus at:
+	https://freesound.org/people/nioczkus/sounds/396331/

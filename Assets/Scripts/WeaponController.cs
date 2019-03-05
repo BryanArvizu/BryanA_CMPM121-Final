@@ -7,15 +7,8 @@ using UnityEngine;
 public class WeaponController : MonoBehaviour
 {
     public GameObject particles;
-
-    private enum FireMode : byte { Auto, Semi};
-
-    [SerializeField] private byte mode = (byte)FireMode.Semi;
-
-    private float damage = 1f;
-    private float range = 100f;
-    private int mag = 24;
-    private int magSize = 24;
+    private AudioSource weaponAudio;
+    public Weapon weapon;
 
     private PlayerController player;
     private AmmoInventory ammoBag;
@@ -24,16 +17,34 @@ public class WeaponController : MonoBehaviour
     {
         player = GetComponent<PlayerController>();
         ammoBag = GetComponent<AmmoInventory>();
+
+        if (gameObject.tag == "Player" && weapon != null)
+            EventManager.TriggerEvent("MagCount", weapon.mag);
+        else if (gameObject.tag == "Player" && weapon == null)
+            EventManager.TriggerEvent("MagCount", 0);
+
+        weaponAudio = GetComponent<AudioSource>();
     }
 
     void Update()
     {
-        if(mag > 0)
+        if (weapon != null && weapon.mag > 0)
         {
-            if (Input.GetButton("Fire") && mode == (byte)FireMode.Auto)
+            if (Input.GetButton("Fire") && weapon.mode == (byte)Weapon.FireMode.Auto)
                 Fire();
-            else if (Input.GetButtonDown("Fire") && mode == (byte)FireMode.Semi)
+            else if (Input.GetButtonDown("Fire") && weapon.mode == (byte)Weapon.FireMode.Semi)
                 Fire();
+
+            if (gameObject.tag == "Player")
+                EventManager.TriggerEvent("MagCount", weapon.mag);
+        }
+        else if (weapon != null)
+        {
+            if (Input.GetButtonDown("Fire"))
+            {
+                weaponAudio.clip = weapon.sound_empty;
+                weaponAudio.Play();
+            }
         }
 
         if (Input.GetButtonDown("Reload"))
@@ -46,7 +57,11 @@ public class WeaponController : MonoBehaviour
         Ray ray = new Ray(cam.transform.position, cam.transform.forward);
         RaycastHit hitInfo;
 
-        if (Physics.Raycast(ray, out hitInfo, range))
+        weapon.mag--;
+        weaponAudio.clip = weapon.sound_fire;
+        weaponAudio.Play();
+
+        if (Physics.Raycast(ray, out hitInfo, weapon.range))
         {
             if (hitInfo.collider != null)
             {
@@ -55,7 +70,7 @@ public class WeaponController : MonoBehaviour
                 Health health = hitInfo.collider.GetComponent<Health>();
                 if (health != null)
                 {
-                    health.InflictDamage(damage);
+                    health.InflictDamage(weapon.damage);
                 }
             }
         }
@@ -63,9 +78,14 @@ public class WeaponController : MonoBehaviour
 
     private void Reload()
     {
-        if (mag < magSize && ammoBag.getAmmo() > 0)
+        if (weapon != null && weapon.mag < weapon.magSize && ammoBag.getAmmo() > 0)
         {
-            mag += ammoBag.requestAmmo(magSize - mag);
+            weaponAudio.clip = weapon.sound_reload;
+            weaponAudio.Play();
+
+            weapon.mag += ammoBag.requestAmmo(weapon.magSize - weapon.mag);
+            if (gameObject.tag == "Player")
+                EventManager.TriggerEvent("MagCount", weapon.mag);
         }
     }
 }

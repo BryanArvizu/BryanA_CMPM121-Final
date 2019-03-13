@@ -38,6 +38,21 @@ public class AmmoInventory : MonoBehaviour
         return x;
     }
 
+    public bool addAmmo(int x)
+    {
+        if (ammo < maxAmmo)
+        {
+            ammo += x;
+            if (ammo > maxAmmo)
+                ammo = maxAmmo;
+            if (gameObject.tag == "Player")
+                EventManager.TriggerEvent("AmmoMax", ammo);
+            return true;
+        }
+        else
+            return false;
+    }
+
     public int getAmmo()
     {
         return ammo;

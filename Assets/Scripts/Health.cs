@@ -29,12 +29,17 @@ public class Health : MonoBehaviour
         }
     }
     
-    public void Heal(float heal)
+    public bool Heal(float heal)
     {
-        currentHealth += heal;
-        if (currentHealth > maxHealth)
-            currentHealth = maxHealth;
-        if (gameObject.tag == "Player")
-            EventManager.TriggerEvent("Health", currentHealth);
+        if (currentHealth < maxHealth)
+        {
+            currentHealth += heal;
+            if (currentHealth > maxHealth)
+                currentHealth = maxHealth;
+            if (gameObject.tag == "Player")
+                EventManager.TriggerEvent("Health", currentHealth);
+            return true;
+        }
+        return false;
     }
 }

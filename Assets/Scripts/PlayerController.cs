@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     const float GRAVITY = 9.81f;
     [SerializeField] private Camera playerCam;
+    [SerializeField] private Camera uiCam;
 
     [Space(10)]
 
@@ -102,5 +103,10 @@ public class PlayerController : MonoBehaviour
     public Camera GetPlayerCamera()
     {
         return playerCam;
+    }
+    
+    public Camera GetUICamera()
+    {
+        return uiCam;
     }
 }

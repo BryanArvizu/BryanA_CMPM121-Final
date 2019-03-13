@@ -1,22 +1,33 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 [RequireComponent(typeof(PlayerController))]
 
 public class WeaponController : MonoBehaviour
 {
+    public event Action<float> deathEvent;
+
     public GameObject particles;
     private AudioSource weaponAudio;
     public Weapon weapon;
 
     private PlayerController player;
     private AmmoInventory ammoBag;
+    private Animator anim;
+
+    private bool isDead = false;
 
     void Start()
     {
+        deathEvent = Death;
+
         player = GetComponent<PlayerController>();
         ammoBag = GetComponent<AmmoInventory>();
+
+        if(weapon != null)
+            anim = weapon.GetComponent<Animator>();
 
         if (gameObject.tag == "Player" && weapon != null)
             EventManager.TriggerEvent("MagCount", weapon.mag);
@@ -28,27 +39,35 @@ public class WeaponController : MonoBehaviour
 
     void Update()
     {
-        if (weapon != null && weapon.mag > 0)
+        if (!isDead)
         {
-            if (Input.GetButton("Fire") && weapon.mode == (byte)Weapon.FireMode.Auto)
-                Fire();
-            else if (Input.GetButtonDown("Fire") && weapon.mode == (byte)Weapon.FireMode.Semi)
-                Fire();
-
-            if (gameObject.tag == "Player")
-                EventManager.TriggerEvent("MagCount", weapon.mag);
-        }
-        else if (weapon != null)
-        {
-            if (Input.GetButtonDown("Fire"))
+            if (weapon != null && weapon.mag > 0)
             {
-                weaponAudio.clip = weapon.sound_empty;
-                weaponAudio.Play();
+                if (Input.GetButton("Fire") && weapon.mode == (byte)Weapon.FireMode.Auto)
+                {
+                    Fire();
+                }
+                else if (Input.GetButtonDown("Fire") && weapon.mode == (byte)Weapon.FireMode.Semi)
+                {
+                    Fire();
+                }
+            }
+            else if (weapon != null)
+            {
+
+                if (Input.GetButtonDown("Fire"))
+                {
+                    weaponAudio.clip = weapon.sound_empty;
+                    weaponAudio.Play();
+                }
+            }
+
+            if (Input.GetButtonDown("Reload"))
+            {
+                Reload();
+                anim.Play("Reload");
             }
         }
-
-        if (Input.GetButtonDown("Reload"))
-            Reload();
     }
 
     private void Fire()
@@ -74,6 +93,10 @@ public class WeaponController : MonoBehaviour
                 }
             }
         }
+
+        print(weapon.mag);
+        if (gameObject.tag == "Player")
+            EventManager.TriggerEvent("MagCount", weapon.mag);
     }
 
     private void Reload()
@@ -84,8 +107,29 @@ public class WeaponController : MonoBehaviour
             weaponAudio.Play();
 
             weapon.mag += ammoBag.requestAmmo(weapon.magSize - weapon.mag);
+
             if (gameObject.tag == "Player")
                 EventManager.TriggerEvent("MagCount", weapon.mag);
+        }
+    }
+
+    
+    private void OnEnable()
+    {
+        //EventManager.StartListening("Health", deathEvent);
+    }
+
+    private void OnDisable()
+    {
+        //EventManager.StopListening("Health", deathEvent);
+    }
+
+    private void Death(float hp)
+    {
+        if (hp <= 0)
+        {
+            isDead = true;
+            player.GetComponent<PlayerController>().GetUICamera().enabled = false;
         }
     }
 }

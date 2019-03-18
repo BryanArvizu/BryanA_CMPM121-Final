@@ -10,6 +10,8 @@ public class ZombieController : MonoBehaviour
     [SerializeField] float visionAngle = 90f;
     [SerializeField] Vector3 rayOffset = Vector3.zero;
 
+    [SerializeField] float forceAggroRange = 10f;
+
     [SerializeField] float attackDmg = 10f;
     [SerializeField] float attackRange = 5f;
     [SerializeField] float attackCooldown = 1f;
@@ -58,7 +60,12 @@ public class ZombieController : MonoBehaviour
 
     void IdleUpdate()
     {
-        if (GetDistanceFromPlayer() < 25)
+        float distance = GetDistanceFromPlayer();
+        if (distance < 10f)
+        {
+            state = (byte)State.Aggro;
+        }
+        else if (distance < 25)
         {
             Vector3 playerDirection = player.transform.position - (transform.position + rayOffset);
 

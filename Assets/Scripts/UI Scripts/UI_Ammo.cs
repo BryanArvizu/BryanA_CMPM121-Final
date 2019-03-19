@@ -4,13 +4,10 @@ using System;
 
 public class UI_Ammo : MonoBehaviour
 {
-    public event Action<float> magEvent;
-
     private Text text;
 
     void Awake()
     {
-        magEvent = UpdateText;
         text = GetComponent<Text>();
     }
 
@@ -24,11 +21,11 @@ public class UI_Ammo : MonoBehaviour
 
     private void OnEnable()
     {
-        EventManager.StartListening("MagCount", magEvent);
+        EventManager.StartListening("MagCount", UpdateText);
     }
 
     private void OnDisable()
     {
-        EventManager.StopListening("magCount", magEvent);
+        EventManager.StopListening("magCount", UpdateText);
     }
 }

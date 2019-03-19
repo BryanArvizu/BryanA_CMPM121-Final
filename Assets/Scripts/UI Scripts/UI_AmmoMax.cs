@@ -4,13 +4,10 @@ using System;
 
 public class UI_AmmoMax : MonoBehaviour
 {
-    public event Action<float> ammoMaxEvent;
-
     private Text text;
 
     void Awake()
     {
-        ammoMaxEvent = UpdateText;
         text = GetComponent<Text>();
     }
 
@@ -24,11 +21,11 @@ public class UI_AmmoMax : MonoBehaviour
 
     private void OnEnable()
     {
-        EventManager.StartListening("AmmoMax", ammoMaxEvent);
+        EventManager.StartListening("AmmoMax", UpdateText);
     }
 
     private void OnDisable()
     {
-        EventManager.StopListening("AmmoMax", ammoMaxEvent);
+        EventManager.StopListening("AmmoMax", UpdateText);
     }
 }

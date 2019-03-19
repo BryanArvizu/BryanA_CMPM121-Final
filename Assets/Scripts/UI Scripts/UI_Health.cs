@@ -1,16 +1,16 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using System;
 
 public class UI_Health : MonoBehaviour
 {
-    public event Action<float> healthEvent;
+    private UnityAction listener;
 
     private Text text;
 
     void Awake()
     {
-        healthEvent = UpdateText;
         text = GetComponent<Text>();
     }
 
@@ -24,11 +24,11 @@ public class UI_Health : MonoBehaviour
 
     private void OnEnable()
     {
-        EventManager.StartListening("Health", healthEvent);
+        EventManager.StartListening("Health", UpdateText);
     }
 
     private void OnDisable()
     {
-        EventManager.StopListening("Health", healthEvent);
+        EventManager.StopListening("Health", UpdateText);
     }
 }

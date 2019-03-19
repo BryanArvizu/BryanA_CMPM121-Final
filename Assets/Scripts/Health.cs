@@ -8,6 +8,8 @@ public class Health : MonoBehaviour
     [SerializeField] private float maxHealth = 100;
     [SerializeField] private bool destroyOnDeath = true;
 
+    public bool invulnerable = false;
+
     private void Start()
     {
         if(gameObject.tag == "Player")
@@ -16,16 +18,25 @@ public class Health : MonoBehaviour
 
     public void InflictDamage(float dmg)
     {
-        currentHealth -= dmg;
-        if (currentHealth < 0)
-            currentHealth = 0;
-
-        if (gameObject.tag == "Player")
-            EventManager.TriggerEvent("Health", currentHealth);
-
-        if (currentHealth == 0 && destroyOnDeath)
+        if(!invulnerable)
         {
-            Destroy(this.gameObject);
+            currentHealth -= dmg;
+            if (currentHealth < 0)
+            {
+                currentHealth = 0;
+            }
+
+            if (gameObject.tag == "Player")
+                EventManager.TriggerEvent("Health", currentHealth);
+
+            if (currentHealth == 0 && destroyOnDeath)
+            {
+                Destroy(this.gameObject);
+            }
+            else if (currentHealth == 0)
+            {
+                invulnerable = true;
+            }
         }
     }
     
@@ -41,5 +52,15 @@ public class Health : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public float getCurrentHealth()
+    {
+        return currentHealth;
+    }
+
+    public float getMaxHealth()
+    {
+        return maxHealth;
     }
 }

@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -25,13 +24,22 @@ public class PlayerController : MonoBehaviour
     // [Header("Weapon Settings")]
 
     private CharacterController controller;
+    private Health hp;
+    private WeaponController weapon;
     private Vector3 movement = Vector3.zero;
+
+    private bool isDead = false;
 
     void Start()
     {
+        EventManager.StartListening("Health", CheckDeath);
+
         controller = GetComponent<CharacterController>();
+        hp = GetComponent<Health>();
+        weapon = GetComponent<WeaponController>();
         Cursor.lockState = CursorLockMode.Locked;
-        if(playerCam == null)
+
+        if (playerCam == null)
         {
             Debug.Log("Player Camera not set: Finding Main Camera...");
             GameObject obj = GameObject.Find("Main Camera");
@@ -43,7 +51,14 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         UpdateRotation();
-        UpdateMovement();
+
+        if (!isDead)
+            UpdateMovement();
+
+        if(Input.GetButtonUp("Cancel"))
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
     }
 
     private void UpdateRotation()
@@ -104,9 +119,22 @@ public class PlayerController : MonoBehaviour
     {
         return playerCam;
     }
-    
+
     public Camera GetUICamera()
     {
         return uiCam;
+    }
+
+    private void CheckDeath(float hp)
+    {
+        if (hp <= 0 && !isDead)
+        {
+            uiCam.enabled = false;
+            if (weapon != null)
+                weapon.disable = true;
+            GetComponent<CapsuleCollider>().enabled = false;
+            playerCam.transform.position += new Vector3(0f, -1f, 0f);
+            isDead = true;
+        }
     }
 }

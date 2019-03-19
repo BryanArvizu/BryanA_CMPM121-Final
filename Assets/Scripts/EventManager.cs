@@ -1,75 +1,84 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
-using System;
+using System.Collections;
+using System.Collections.Generic;
+
+// CODE TAKEN FROM:
+//      https://unity3d.com/learn/tutorials/topics/scripting/events-creating-simple-messaging-system and
+//      https://forum.unity.com/threads/messaging-system-passing-parameters-with-the-event.331284/ (user: raglet)
+
+[System.Serializable]
+public class ThisEvent : UnityEvent<float>
+{
+}
 
 public class EventManager : MonoBehaviour
 {
-    // Code taken from Unity Tutorial @ https://unity3d.com/learn/tutorials/topics/scripting/events-creating-simple-messaging-system
+    private Dictionary<string, ThisEvent> eventDictionary;
 
-    private Dictionary<string, Action<float>> eventDictionary;
-    private static EventManager eventManager;
+    private static EventManager eventManagerArgs;
+
     public static EventManager instance
     {
         get
         {
-            if (!eventManager)
+            if (!eventManagerArgs)
             {
-                eventManager = FindObjectOfType(typeof(EventManager)) as EventManager;
+                eventManagerArgs = FindObjectOfType(typeof(EventManager)) as EventManager;
 
-                if (!eventManager)
+                if (!eventManagerArgs)
+                {
                     Debug.LogError("There needs to be one active EventManger script on a GameObject in your scene.");
+                }
                 else
-                    eventManager.Init();
+                {
+                    eventManagerArgs.Init();
+                }
             }
-            return eventManager;
+
+            return eventManagerArgs;
         }
     }
 
-    // Initialize Event Dictionary
     void Init()
     {
         if (eventDictionary == null)
-            eventDictionary = new Dictionary<string, Action<float>>();
+        {
+            eventDictionary = new Dictionary<string, ThisEvent>();
+        }
     }
 
-    // Start Listening To An Event
-    public static void StartListening(string eventName, Action<float> listener)
+    public static void StartListening(string eventName, UnityAction<float> listener)
     {
-        Action<float> thisEvent = null;
-
-        // If entry exists, add the listener
+        ThisEvent thisEvent = null;
         if (instance.eventDictionary.TryGetValue(eventName, out thisEvent))
         {
-            thisEvent += listener;
+            thisEvent.AddListener(listener);
         }
-        // if it does not exist, make it.
         else
         {
-            thisEvent += listener;
+            thisEvent = new ThisEvent();
+            thisEvent.AddListener(listener);
             instance.eventDictionary.Add(eventName, thisEvent);
         }
     }
 
-    // Stop Listening To An Event
-    public static void StopListening(string eventName, Action<float> listener)
+    public static void StopListening(string eventName, UnityAction<float> listener)
     {
-        if (eventManager == null) return;
-        Action<float> thisEvent = null;
+        if (eventManagerArgs == null) return;
+        ThisEvent thisEvent = null;
         if (instance.eventDictionary.TryGetValue(eventName, out thisEvent))
         {
-            thisEvent -= listener;
+            thisEvent.RemoveListener(listener);
         }
     }
 
-    // Trigger An Event
-    public static void TriggerEvent(string eventName, float x)
+    public static void TriggerEvent(string eventName, float value)
     {
-        Action<float> thisEvent = null;
+        ThisEvent thisEvent = null;
         if (instance.eventDictionary.TryGetValue(eventName, out thisEvent))
         {
-            thisEvent.Invoke(x);
+            thisEvent.Invoke(value);
         }
     }
 }

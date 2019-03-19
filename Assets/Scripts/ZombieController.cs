@@ -35,7 +35,10 @@ public class ZombieController : MonoBehaviour
 
     void Update()
     {
-        if(anim)
+        if(agent.velocity != Vector3.zero)
+        {
+            anim.Play("Walk");
+        }
 
         if (state == (byte)State.Idle)
         {

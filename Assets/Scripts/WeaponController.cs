@@ -1,14 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 [RequireComponent(typeof(PlayerController))]
 
 public class WeaponController : MonoBehaviour
 {
-    public event Action<float> deathEvent;
-
     public GameObject particles;
     private AudioSource weaponAudio;
     public Weapon weapon;
@@ -17,16 +14,14 @@ public class WeaponController : MonoBehaviour
     private AmmoInventory ammoBag;
     private Animator anim;
 
-    private bool isDead = false;
+    public bool disable = false;
 
     void Start()
     {
-        deathEvent = Death;
-
         player = GetComponent<PlayerController>();
         ammoBag = GetComponent<AmmoInventory>();
 
-        if(weapon != null)
+        if (weapon != null)
             anim = weapon.GetComponent<Animator>();
 
         if (gameObject.tag == "Player" && weapon != null)
@@ -39,7 +34,7 @@ public class WeaponController : MonoBehaviour
 
     void Update()
     {
-        if (!isDead)
+        if (!disable)
         {
             if (weapon != null && weapon.mag > 0)
             {
@@ -94,7 +89,6 @@ public class WeaponController : MonoBehaviour
             }
         }
 
-        print(weapon.mag);
         if (gameObject.tag == "Player")
             EventManager.TriggerEvent("MagCount", weapon.mag);
     }
@@ -110,26 +104,6 @@ public class WeaponController : MonoBehaviour
 
             if (gameObject.tag == "Player")
                 EventManager.TriggerEvent("MagCount", weapon.mag);
-        }
-    }
-
-    
-    private void OnEnable()
-    {
-        //EventManager.StartListening("Health", deathEvent);
-    }
-
-    private void OnDisable()
-    {
-        //EventManager.StopListening("Health", deathEvent);
-    }
-
-    private void Death(float hp)
-    {
-        if (hp <= 0)
-        {
-            isDead = true;
-            player.GetComponent<PlayerController>().GetUICamera().enabled = false;
         }
     }
 }

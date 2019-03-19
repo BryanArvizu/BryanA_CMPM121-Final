@@ -22,8 +22,10 @@ public class Weapon : MonoBehaviour
     public AudioClip sound_reload;
 
     [Header("Animations")]
+    public AnimationClip recoil;
     public AnimationClip reload;
     public AnimationClip sprint;
+    public AnimationClip lower;
 
     bool Reload(float request)
     {

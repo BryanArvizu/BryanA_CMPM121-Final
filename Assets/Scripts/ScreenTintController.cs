@@ -33,9 +33,9 @@ public class ScreenTintController : MonoBehaviour
         }
     }
 
-    void TintUpdate(float x)
+    void TintUpdateHealth(float health)
     {
-        if (x == 0f)
+        if (health == 0f)
         {
             print("wow");
             decline = false;
@@ -50,11 +50,11 @@ public class ScreenTintController : MonoBehaviour
 
     private void OnEnable()
     {
-        EventManager.StartListening("Health", TintUpdate);
+        EventManager.StartListening("Health", TintUpdateHealth);
     }
 
     private void OnDisable()
     {
-        EventManager.StopListening("Health", TintUpdate);
+        EventManager.StopListening("Health", TintUpdateHealth);
     }
 }

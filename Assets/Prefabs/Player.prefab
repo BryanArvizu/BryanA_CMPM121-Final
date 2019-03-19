@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1688192771}
   - component: {fileID: 1688192773}
-  - component: {fileID: 1688192772}
   m_Layer: 0
   m_Name: UI Camera
   m_TagString: Untagged
@@ -56,7 +55,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.01
-  far clip plane: 10
+  far clip plane: 5
   field of view: 80
   orthographic: 0
   orthographic size: 5
@@ -75,14 +74,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &1688192772
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1688192770}
-  m_Enabled: 1
 --- !u!1 &3302311614068024696
 GameObject:
   m_ObjectHideFlags: 0
@@ -213,10 +204,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerCam: {fileID: 3302311614456071743}
+  uiCam: {fileID: 1688192773}
   invertMouse: 1
   sensitivity: 8
   speed: 4
-  sprintMultiplier: 2
+  sprintMultiplier: 1.5
   jumpForce: 12
   gravityScale: 0.0625
 --- !u!114 &3302311614068024688
@@ -234,6 +226,7 @@ MonoBehaviour:
   particles: {fileID: 8628262648273266048, guid: bffcfe2f4a972cb4087b054bfb1fd02c,
     type: 3}
   weapon: {fileID: 8674714486221868344}
+  disable: 0
 --- !u!114 &3302311614068024689
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -248,7 +241,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 100
   maxHealth: 100
-  destroyOnDeath: 1
+  destroyOnDeath: 0
+  invulnerable: 0
 --- !u!114 &3302311614068024655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -383,7 +377,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3302311614110254674}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3302311614456071742}
@@ -399,13 +393,13 @@ Light:
   m_Enabled: 1
   serializedVersion: 8
   m_Type: 0
-  m_Color: {r: 1, g: 0.73170733, b: 0, a: 1}
-  m_Intensity: 2
-  m_Range: 24
-  m_SpotAngle: 60
+  m_Color: {r: 1, g: 0.80273587, b: 0.2783019, a: 1}
+  m_Intensity: 5
+  m_Range: 20
+  m_SpotAngle: 85
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 1
+    m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -422,7 +416,7 @@ Light:
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
@@ -523,20 +517,40 @@ PrefabInstance:
       propertyPath: m_Name
       value: Scar_White
       objectReference: {fileID: 0}
+    - target: {fileID: 6176383663283986561, guid: 52e3e92374707ba4f8fef454a9aebeea,
+        type: 3}
+      propertyPath: damage
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 6176383663283986561, guid: 52e3e92374707ba4f8fef454a9aebeea,
+        type: 3}
+      propertyPath: recoil
+      value: 
+      objectReference: {fileID: 7400000, guid: e5e152e28d60fe84cbb89f9404d69c08, type: 2}
+    - target: {fileID: 6176383663283986561, guid: 52e3e92374707ba4f8fef454a9aebeea,
+        type: 3}
+      propertyPath: reload
+      value: 
+      objectReference: {fileID: 7400000, guid: 02abaf1ec63443a4780a064b4802d0ec, type: 2}
+    - target: {fileID: 6176383663283986561, guid: 52e3e92374707ba4f8fef454a9aebeea,
+        type: 3}
+      propertyPath: sprint
+      value: 
+      objectReference: {fileID: 7400000, guid: 3a5e3d3ab46dc3648990e99975bcbc2c, type: 2}
     - target: {fileID: 6176383664033937422, guid: 52e3e92374707ba4f8fef454a9aebeea,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.443
+      value: 0.375
       objectReference: {fileID: 0}
     - target: {fileID: 6176383664033937422, guid: 52e3e92374707ba4f8fef454a9aebeea,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.1500001
+      value: -0.25
       objectReference: {fileID: 0}
     - target: {fileID: 6176383664033937422, guid: 52e3e92374707ba4f8fef454a9aebeea,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.47
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6176383664033937422, guid: 52e3e92374707ba4f8fef454a9aebeea,
         type: 3}
@@ -593,16 +607,26 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.25
       objectReference: {fileID: 0}
-    - target: {fileID: 6176383663283986561, guid: 52e3e92374707ba4f8fef454a9aebeea,
+    - target: {fileID: 6176383664033937416, guid: 52e3e92374707ba4f8fef454a9aebeea,
         type: 3}
-      propertyPath: reload
-      value: 
-      objectReference: {fileID: 7400000, guid: 02abaf1ec63443a4780a064b4802d0ec, type: 2}
-    - target: {fileID: 6176383663283986561, guid: 52e3e92374707ba4f8fef454a9aebeea,
+      propertyPath: m_LocalPosition.y
+      value: -0.4181505
+      objectReference: {fileID: 0}
+    - target: {fileID: 6176383664033937416, guid: 52e3e92374707ba4f8fef454a9aebeea,
         type: 3}
-      propertyPath: sprint
-      value: 
-      objectReference: {fileID: 7400000, guid: 3a5e3d3ab46dc3648990e99975bcbc2c, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -0.1603957
+      objectReference: {fileID: 0}
+    - target: {fileID: 6176383664033937418, guid: 52e3e92374707ba4f8fef454a9aebeea,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.1679915
+      objectReference: {fileID: 0}
+    - target: {fileID: 6176383664033937418, guid: 52e3e92374707ba4f8fef454a9aebeea,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.649795
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 52e3e92374707ba4f8fef454a9aebeea, type: 3}
 --- !u!4 &8674714486418265527 stripped

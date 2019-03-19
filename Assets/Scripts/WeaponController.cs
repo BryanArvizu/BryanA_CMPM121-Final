@@ -36,7 +36,14 @@ public class WeaponController : MonoBehaviour
     {
         if (!disable)
         {
-            if (weapon != null && weapon.mag > 0)
+            bool sprinting = player.IsSprinting();
+            anim.SetBool("IsSprinting", sprinting);
+
+            if (sprinting)
+                anim.Play("Sprint");
+            
+
+            if (weapon != null && weapon.mag > 0 && sprinting == false)
             {
                 if (Input.GetButton("Fire") && weapon.mode == (byte)Weapon.FireMode.Auto)
                 {
@@ -47,9 +54,8 @@ public class WeaponController : MonoBehaviour
                     Fire();
                 }
             }
-            else if (weapon != null)
+            else if (weapon != null && sprinting == false)
             {
-
                 if (Input.GetButtonDown("Fire"))
                 {
                     weaponAudio.clip = weapon.sound_empty;
@@ -57,10 +63,9 @@ public class WeaponController : MonoBehaviour
                 }
             }
 
-            if (Input.GetButtonDown("Reload"))
+            if (Input.GetButtonDown("Reload") && weapon.mag < weapon.magSize && !sprinting)
             {
                 Reload();
-                anim.Play("Reload");
             }
         }
     }
@@ -72,6 +77,8 @@ public class WeaponController : MonoBehaviour
         RaycastHit hitInfo;
 
         weapon.mag--;
+        
+        anim.Play("Recoil",-1,0);
         weaponAudio.clip = weapon.sound_fire;
         weaponAudio.Play();
 
@@ -97,6 +104,7 @@ public class WeaponController : MonoBehaviour
     {
         if (weapon != null && weapon.mag < weapon.magSize && ammoBag.getAmmo() > 0)
         {
+            anim.Play("Reload");
             weaponAudio.clip = weapon.sound_reload;
             weaponAudio.Play();
 

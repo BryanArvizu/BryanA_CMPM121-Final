@@ -29,6 +29,8 @@ public class PlayerController : MonoBehaviour
     private Vector3 movement = Vector3.zero;
 
     private bool isDead = false;
+    private bool sprinting = false;
+    private float exitTimer = 3f;
 
     void Start()
     {
@@ -54,11 +56,22 @@ public class PlayerController : MonoBehaviour
 
         if (!isDead)
             UpdateMovement();
+        else if(exitTimer > 0f)
+        {
+            exitTimer -= Time.deltaTime;
+            if(exitTimer < 0)
+            {
+                exitTimer = 0;
+                SceneManager.LoadScene("MainMenu");
+            }
+        }
 
         if(Input.GetButtonUp("Cancel"))
         {
             SceneManager.LoadScene("MainMenu");
         }
+        if (Input.GetKeyUp(KeyCode.P))
+            invertMouse = !invertMouse;
     }
 
     private void UpdateRotation()
@@ -95,8 +108,13 @@ public class PlayerController : MonoBehaviour
             if (Input.GetButton("Sprint") && Input.GetAxis("Vertical") > 0)
             {
                 print("SPRINTING");
+                sprinting = true;
                 movement.x *= sprintMultiplier;
                 movement.z *= sprintMultiplier;
+            }
+            else
+            {
+                sprinting = false;
             }
 
             if (Input.GetButtonDown("Jump"))
@@ -108,6 +126,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             print("inAir");
+            sprinting = false;
             movement.y = movement.y - (GRAVITY * Time.deltaTime * gravityScale);
         }
 
@@ -123,6 +142,11 @@ public class PlayerController : MonoBehaviour
     public Camera GetUICamera()
     {
         return uiCam;
+    }
+
+    public bool IsSprinting()
+    {
+        return sprinting;
     }
 
     private void CheckDeath(float hp)

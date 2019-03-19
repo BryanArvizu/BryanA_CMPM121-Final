@@ -5,20 +5,31 @@ using UnityEngine.AI;
 
 public class ZombieController : MonoBehaviour
 {
-    enum State : byte { Idle, Aggro, Attacking };
+    enum State : byte { Idle, Aggro, Attacking, Dying };
 
+    [Header("Vision Settings")]
     [SerializeField] float visionAngle = 90f;
     [SerializeField] Vector3 rayOffset = Vector3.zero;
-
     [SerializeField] float forceAggroRange = 10f;
 
+    [Space(10)]
+
+    [Header("Attack Settings")]
     [SerializeField] float attackDmg = 10f;
     [SerializeField] float attackRange = 5f;
     [SerializeField] float attackCooldown = 1f;
 
+    [Space(10)]
+
+    [Header("Audio Clips")]
+    [SerializeField] AudioClip attack;
+    [SerializeField] AudioClip groan;
+
     static private GameObject player;
     private NavMeshAgent agent;
     private Animator anim;
+    private Health hp;
+    private AudioSource audio;
 
     private byte state;
     private float timer = 0f;
@@ -30,38 +41,59 @@ public class ZombieController : MonoBehaviour
 
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
+        hp = GetComponent<Health>();
+        audio = GetComponent<AudioSource>();
         state = (byte)State.Idle;
     }
 
     void Update()
     {
-        if(agent.velocity != Vector3.zero)
+        if (hp.getCurrentHealth() == 0 && state != (byte)State.Dying)
         {
-            anim.Play("Walk");
+            timer = 2f;
+            agent.isStopped = true;
+            anim.Play("fallingback");
+            GetComponent<CapsuleCollider>().enabled = false;
+            state = (byte)State.Dying;
+        }
+        else if(agent.velocity != Vector3.zero && state == (byte)State.Aggro || state == (byte)State.Idle)
+        {
+            anim.Play("walk_in_place");
+        }
+        else if(state == (byte)State.Aggro || state == (byte)State.Idle)
+        {
+            anim.Play("idle");
         }
 
         if (state == (byte)State.Idle)
         {
             IdleUpdate();
+            randomGroan(0.1f);
         }
 
         else if (state == (byte)State.Aggro)
         {
             AggroUpdate();
+            randomGroan(0.5f);
         }
 
         else if (state == (byte)State.Attacking)
         {
             Attack();
         }
+
+        else if (state == (byte)State.Dying)
+        {
+            DyingUpdate();
+        }
     }
 
-    float GetDistanceFromPlayer()
+    public float GetDistanceFromPlayer()
     {
         return Vector3.Distance(transform.position, player.transform.position);
     }
 
-    void IdleUpdate()
+    private void IdleUpdate()
     {
         float distance = GetDistanceFromPlayer();
         if (distance < 10f)
@@ -88,12 +120,15 @@ public class ZombieController : MonoBehaviour
         }
     }
 
-    void AggroUpdate()
+    private void AggroUpdate()
     {
         if (GetDistanceFromPlayer() < attackRange)
         {
             agent.ResetPath();
             timer = attackCooldown;
+            audio.clip = attack;
+            audio.volume = 0.4f;
+            audio.Play();
             anim.Play("attack");
             player.GetComponent<Health>().InflictDamage(attackDmg);
             state = (byte)State.Attacking;
@@ -104,13 +139,34 @@ public class ZombieController : MonoBehaviour
         }
     }
 
-    void Attack()
+    private void Attack()
     {
         timer -= Time.deltaTime;
         if(timer <= 0)
         {
             timer = 0f;
             state = (byte)State.Aggro;
+        }
+    }
+
+    private void DyingUpdate()
+    {
+        timer -= Time.deltaTime;
+        if (timer <= 0)
+        {
+            timer = 0f;
+            Destroy(gameObject);
+        }
+    }
+
+    private void randomGroan(float odds)
+    {
+        float rand = Random.Range(0f, 100f);
+        if(rand <= odds && !audio.isPlaying)
+        {
+            audio.clip = groan;
+            audio.volume = 0.1f;
+            audio.Play();
         }
     }
 }

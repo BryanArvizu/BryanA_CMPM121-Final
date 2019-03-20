@@ -38,9 +38,6 @@ public class WeaponController : MonoBehaviour
         {
             bool sprinting = player.IsSprinting();
             anim.SetBool("IsSprinting", sprinting);
-
-            if (sprinting)
-                anim.Play("Sprint");
             
 
             if (weapon != null && weapon.mag > 0 && sprinting == false)

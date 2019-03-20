@@ -4687,7 +4687,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11100000, guid: 5c07fbfc021765b46bcd6299bdd3313c, type: 3}
       propertyPath: m_Animations.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11100000, guid: 5c07fbfc021765b46bcd6299bdd3313c, type: 3}
       propertyPath: m_Animation

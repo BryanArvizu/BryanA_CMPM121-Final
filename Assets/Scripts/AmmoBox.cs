@@ -10,12 +10,9 @@ public class AmmoBox : MonoBehaviour
     {
         if(other.transform.tag == "Player")
         {
-            print("player");
             AmmoInventory inventory = other.gameObject.GetComponent<AmmoInventory>();
             if(inventory != null)
             {
-                print("notnull");
-
                 if (inventory.addAmmo(ammo))
                     Destroy(this.gameObject);
             }

@@ -10,6 +10,9 @@ ASSET SOURCES:
 	Simple Box Pack by Warkarma at:
 	https://assetstore.unity.com/packages/3d/props/simple-box-pack-807
 
+	Handpainted Keys by ROBOCG at:
+	https://assetstore.unity.com/packages/3d/handpainted-keys-42044
+
 FONTS:
 	Old Newspaper Types by Manfred Klein at:
 	https://www.dafont.com/oldnewspapertypes.font?l[]=10&l[]=1

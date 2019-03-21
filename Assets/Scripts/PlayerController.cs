@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
     const float GRAVITY = 9.81f;
     [SerializeField] private Camera playerCam;
     [SerializeField] private Camera uiCam;
+    [SerializeField] private GameObject lossUI;
 
     [Space(10)]
 
@@ -107,7 +108,6 @@ public class PlayerController : MonoBehaviour
 
             if (Input.GetButton("Sprint") && Input.GetAxis("Vertical") > 0)
             {
-                print("SPRINTING");
                 sprinting = true;
                 movement.x *= sprintMultiplier;
                 movement.z *= sprintMultiplier;
@@ -119,13 +119,11 @@ public class PlayerController : MonoBehaviour
 
             if (Input.GetButtonDown("Jump"))
             {
-                print("JUMP");
                 movement.y = Time.deltaTime * jumpForce;
             }
         }
         else
         {
-            print("inAir");
             sprinting = false;
             movement.y = movement.y - (GRAVITY * Time.deltaTime * gravityScale);
         }
@@ -159,6 +157,13 @@ public class PlayerController : MonoBehaviour
             GetComponent<CapsuleCollider>().enabled = false;
             playerCam.transform.position += new Vector3(0f, -1f, 0f);
             isDead = true;
+            if (lossUI != null)
+                lossUI.SetActive(true);
         }
+    }
+
+    public WeaponController GetWeapon()
+    {
+        return weapon;
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ScreenTintController : MonoBehaviour
 {
-    private RawImage img;
+    public RawImage img;
 
     public float fadeRate = 0.1f;
     public bool decline = true;
@@ -35,6 +35,7 @@ public class ScreenTintController : MonoBehaviour
 
     void TintUpdateHealth(float health)
     {
+        print(health);
         if (health == 0f)
         {
             print("wow");

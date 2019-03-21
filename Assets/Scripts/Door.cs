@@ -7,6 +7,7 @@ public class Door : MonoBehaviour
     [SerializeField] private Color color;
     [SerializeField] private float range = 5f;
     [SerializeField] private float speed = 1f;
+    [SerializeField] private int requiredKeyID = 0;
 
     private static NavMeshSurface navMesh;
     private static GameObject player;
@@ -39,7 +40,8 @@ public class Door : MonoBehaviour
     {
         if (Vector3.Distance(transform.position, player.transform.position) < range)
         {
-            if (Input.GetKeyDown(KeyCode.E))
+            KeyInventory keyInv = player.GetComponent<KeyInventory>();
+            if (keyInv != null && keyInv.hasKey(requiredKeyID))
                 return true;
         }
         return false;

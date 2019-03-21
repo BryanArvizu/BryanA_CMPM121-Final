@@ -8,3 +8,7 @@ Outbreak is my final for CMPM 121, a basic first-person shooter where the object
 - LEFT CLICK - Shoot
 - SPACE - Jump
 - SHIFT (hold) - Sprint
+
+#### Bonus
+- ESC - Abort to Menu / Exit Game
+- P - Toggle Inverted Mouse

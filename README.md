@@ -12,3 +12,6 @@ Outbreak is my final for CMPM 121, a basic first-person shooter where the object
 #### Bonus
 - ESC - Abort to Menu / Exit Game
 - P - Toggle Inverted Mouse
+
+### Sample Youtube Video:
+- https://youtu.be/O3f5zcNlL_c
